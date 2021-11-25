@@ -1,0 +1,1 @@
+#TODO: pod se 2 containery, sdileni souboru mezi kontejnery, pristupy mezi kontejnery
