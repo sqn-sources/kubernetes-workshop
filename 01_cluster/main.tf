@@ -7,7 +7,7 @@ provider "digitalocean" {
 resource "digitalocean_kubernetes_cluster" "cluster" {
   name    = var.cluster_name
   region  = var.region
-  version = "1.20.2-do.0"
+  version = "1.21.5-do.0"
 
   node_pool {
     name       = "worker-pool"
@@ -18,17 +18,22 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
   }
 }
 
+resource "local_file" "kube_config" {
+  filename          = "/root/.kube/config"
+  sensitive_content = digitalocean_kubernetes_cluster.cluster.kube_config[0].raw_config
+}
+
 provider "kubernetes" {
-  host                   = data.digitalocean_kubernetes_cluster.cluster.endpoint
-  token                  = data.digitalocean_kubernetes_cluster.cluster.kube_config[0].token
-  cluster_ca_certificate = base64decode(data.digitalocean_kubernetes_cluster.cluster.kube_config[0].cluster_ca_certificate)
+  host                   = digitalocean_kubernetes_cluster.cluster.endpoint
+  token                  = digitalocean_kubernetes_cluster.cluster.kube_config[0].token
+  cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.cluster.kube_config[0].cluster_ca_certificate)
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.digitalocean_kubernetes_cluster.cluster.endpoint
-    token                  = data.digitalocean_kubernetes_cluster.cluster.kube_config[0].token
-    cluster_ca_certificate = base64decode(data.digitalocean_kubernetes_cluster.cluster.kube_config[0].cluster_ca_certificate)
+    host                   = digitalocean_kubernetes_cluster.cluster.endpoint
+    token                  = digitalocean_kubernetes_cluster.cluster.kube_config[0].token
+    cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.cluster.kube_config[0].cluster_ca_certificate)
   }
 }
 
@@ -39,9 +44,12 @@ resource "helm_release" "kubernetes_dashboard" {
   version    = "5.0.4"
 }
 
-resource "helm_release" "nginx_ingress" {
-  name       = "ingress-nginx"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
-  version    = "v1.1.0"
-}
+
+#resource "helm_release" "nginx_ingress" {
+#  name             = "ingress-nginx"
+#  repository       = "https://kubernetes.github.io/ingress-nginx"
+#  chart            = "ingress-nginx"
+#  namespace        = "ingress-nginx"
+#  create_namespace = true
+#  version          = "v4.0.11"
+#}
