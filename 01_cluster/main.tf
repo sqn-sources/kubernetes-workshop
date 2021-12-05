@@ -38,10 +38,12 @@ provider "helm" {
 }
 
 resource "helm_release" "kubernetes_dashboard" {
-  name       = "kubernetes-dashboard"
-  repository = "https://kubernetes.github.io/dashboard/"
-  chart      = "kubernetes-dashboard"
-  version    = "5.0.4"
+  name             = "kubernetes-dashboard"
+  repository       = "https://kubernetes.github.io/dashboard/"
+  chart            = "kubernetes-dashboard"
+  namespace        = "kubernetes-dashboard"
+  create_namespace = true
+  version          = "5.0.4"
 }
 
 

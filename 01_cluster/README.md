@@ -55,7 +55,10 @@ Nastartování proxy serveru
 `kubectl proxy --port=8080`   
 Poté múžeme  
  `curl http://localhost:8080/api/`
-
+Dashboard
+`http://localhost:8080/api/v1/namespaces/default/pods/https:kubernetes-dashboard-79cdb57c86-228bf:8443/proxy/#/login`
+Pod
+`http://localhost:8080/api/v1/namespaces/default/pods/mc1:8181/proxy/`
 
 #Namespace
 Namespace poskytuje mechanismus pro izolaci skupiny prostředků uvnitř clusteru. Jména resourců musí být unikátní v rámci jednoho namespace, ale mohou se opakovat napříč několika namespacy. Namespace-based scoping lze používat pouze pro některé objekty (Deployment, Services, Ingress,... ) ale už ne pro cluster-wide objekty (StorageClass, Node, PersistentVolume, ...).
