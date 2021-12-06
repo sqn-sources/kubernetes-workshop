@@ -1,18 +1,16 @@
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: minimal-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: ingress-wildcard-host
 spec:
   rules:
-    - http:
+    - host: "foo.bar.com"
+      http:
         paths:
-          - path: /testpath
-            pathType: Prefix
+          - pathType: Prefix
+            path: "/bar"
             backend:
               service:
-                name: test
+                name: service1
                 port:
                   number: 80
